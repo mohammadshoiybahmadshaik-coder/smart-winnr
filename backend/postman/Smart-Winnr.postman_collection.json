@@ -1,0 +1,138 @@
+{
+  "info": {
+    "_postman_id": "4f3af7ae-e41e-4d4a-a5de-50ad54e89fd3",
+    "name": "Smart Winnr API",
+    "description": "Restaurant discovery, reviews, ownership, and administration API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" },
+    { "key": "restaurantId", "value": "" },
+    { "key": "reviewId", "value": "" },
+    { "key": "userId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/" }
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register customer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Customer Name\",\n  \"email\": \"customer@example.com\",\n  \"password\": \"ChangeMe1!\"\n}" },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"ChangeMe1!\"\n}" },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Current profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/users/profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restaurants",
+      "item": [
+        { "name": "List/search/filter", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/restaurants?search=&location=&cuisine=" } },
+        { "name": "Restaurant details", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/restaurants/{{restaurantId}}" } },
+        { "name": "List restaurant reviews", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/restaurants/{{restaurantId}}/reviews" } },
+        {
+          "name": "Create restaurant (admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Restaurant Name\",\n  \"location\": \"City\",\n  \"cuisine\": \"Cuisine\",\n  \"description\": \"\"\n}" },
+            "url": "{{baseUrl}}/api/admin/restaurants"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer reviews",
+      "item": [
+        { "name": "My reviews", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/reviews/mine" } },
+        {
+          "name": "Create review",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"rating\": 5,\n  \"comment\": \"A lovely meal and thoughtful service.\"\n}" },
+            "url": "{{baseUrl}}/api/reviews/restaurant/{{restaurantId}}"
+          }
+        },
+        {
+          "name": "Update review",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"rating\": 4,\n  \"comment\": \"Updated review after another visit.\"\n}" },
+            "url": "{{baseUrl}}/api/reviews/{{reviewId}}"
+          }
+        },
+        { "name": "Delete review (own or admin)", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/reviews/{{reviewId}}" } }
+      ]
+    },
+    {
+      "name": "Restaurant owner",
+      "item": [
+        { "name": "My restaurant", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/owner/restaurant" } },
+        { "name": "Reviews and reviewers", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/owner/reviews" } },
+        {
+          "name": "Update my restaurant",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Restaurant Name\",\n  \"location\": \"Updated City\",\n  \"cuisine\": \"Updated Cuisine\",\n  \"description\": \"Updated description.\"\n}" },
+            "url": "{{baseUrl}}/api/owner/restaurant"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Administrator",
+      "item": [
+        { "name": "Dashboard", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/admin/dashboard" } },
+        { "name": "Search users", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/admin/users?search=&role=" } },
+        {
+          "name": "Create restaurant owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Restaurant Owner\",\n  \"email\": \"owner@example.com\",\n  \"password\": \"ChangeMe1!\",\n  \"role\": \"owner\"\n}" },
+            "url": "{{baseUrl}}/api/admin/users"
+          }
+        },
+        { "name": "All restaurants (admin)", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/admin/restaurants?search=&location=&cuisine=" } },
+        {
+          "name": "Assign owner to restaurant",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"ownerId\": \"{{userId}}\"\n}" },
+            "url": "{{baseUrl}}/api/admin/restaurants/{{restaurantId}}/owner"
+          }
+        },
+        { "name": "All reviews", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/admin/reviews" } },
+        { "name": "Remove inappropriate review", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/reviews/{{reviewId}}" } }
+      ]
+    }
+  ]
+}
